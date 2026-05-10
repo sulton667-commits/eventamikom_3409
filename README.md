@@ -22,9 +22,6 @@
 * **NIM:** 24.12.3409
 * **Mata Kuliah:** Digital Business
 * **Repository:** Eventamikom_3409
-
 ---
-
-### 📂 Daftar Tugas
 
 
