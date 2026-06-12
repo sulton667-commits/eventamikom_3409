@@ -54,6 +54,64 @@
             <p class="text-lg text-slate-600 leading-relaxed">
                 {{ $event->description ?? 'Deskripsi event belum tersedia.' }}
             </p>
+<div class="prose prose-slate max-w-none">
+                <h3 class="text-xl font-bold">Kebijakan Tiket</h3>
+                <ul class="space-y-3 text-slate-500">
+                    <li class="flex items-start gap-2">
+                        <svg class="w-5 h-5 text-green-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        E-Ticket akan dikirimkan otomatis setelah pembayaran berhasil.
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-5 h-5 text-green-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        Tiket dapat discan di pintu masuk (Check-in).
+                    </li>
+                    <li class="flex items-start gap-2 text-rose-500">
+                        <svg class="w-5 h-5 text-rose-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Tiket yang sudah dibeli tidak dapat direfund.
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Partner Section -->
+            <div class="space-y-6">
+                <h3 class="text-xl font-bold">Dukung Oleh</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($partners as $partner)
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            @if($partner->logo_path && file_exists(public_path('storage/' . $partner->logo_path)))
+                                <img src="{{ asset('storage/' . $partner->logo_path) }}" alt="{{ $partner->name }}" class="w-16 h-16 object-contain">
+                            @else
+                                <div class="w-16 h-16 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 font-bold">
+                                    {{ strtoupper(substr($partner->name, 0, 2)) }}
+                                </div>
+                            @endif
+                            <div class="ml-4">
+                                <h4 class="font-semibold text-gray-800">{{ $partner->name }}</h4>
+                                <p class="text-sm text-gray-500">{{ $partner->type }}</p>
+                            </div>
+                        </div>
+                        @if(!empty($partner->description))
+                            <p class="text-gray-600 text-sm mb-4">{{ $partner->description }}</p>
+                        @endif
+                        @if(!empty($partner->website))
+                            <a href="{{ $partner->website }}" target="_blank" rel="noopener noreferrer" class="inline-block bg-indigo-100 text-indigo-800 px-3 py-1 rounded text-sm font-medium hover:bg-indigo-200 transition-colors">
+                                Kunjungi Website
+                            </a>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
 
         <div class="bg-indigo-600 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl shadow-indigo-200 relative overflow-hidden">
@@ -109,4 +167,3 @@
         </div>
     </div>
 </main>
-@endsection

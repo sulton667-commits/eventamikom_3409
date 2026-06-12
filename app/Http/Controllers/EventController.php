@@ -11,10 +11,14 @@ class EventController extends Controller
     {
         $event = $id ? Event::with('category')->findOrFail($id) : Event::with('category')->first();
         return view('event-detail', compact('event'));
+        $event = $id ? Event::with(['category', 'partner'])->findOrFail($id) : Event::with(['category', 'partner'])->first();
+        $partners = \App\Models\Partner::where('is_active', true)->get();
+        return view('event-detail', compact('event', 'partners'));
     }
 
     public function checkout()
     {
         return view('checkout');
     }
+
 }
