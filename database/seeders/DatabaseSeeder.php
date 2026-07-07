@@ -47,11 +47,6 @@ class DatabaseSeeder extends Seeder
             'price' => 50000,
             'stock' => 100,
             'poster_path' => 'posters/event-1.png',
-        User::create([
-            'name' => 'Admin Amikom',
-            'email' => 'admin@amikom.ac.id',
-            'password' => bcrypt('password'),
-            'role' => 'admin'
         ]);
 
         \App\Models\Event::create([
