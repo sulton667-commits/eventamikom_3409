@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         );
 
         // 2. Partner User Account
-        User::firstOrCreate(
+        $partnerUser = User::firstOrCreate(
             ['email' => 'partner@amikom.ac.id'],
             [
                 'name' => 'Partner HMSSI Amikom',
@@ -37,10 +37,14 @@ class DatabaseSeeder extends Seeder
         $partner = Partner::firstOrCreate(
             ['name' => 'HMSSI Amikom'],
             [
+                'user_id' => $partnerUser->id,
                 'category' => 'Himpunan Mahasiswa Sistem & Sains Informasi Amikom',
                 'status' => 'Aktif',
             ]
         );
+        if (!$partner->user_id) {
+            $partner->update(['user_id' => $partnerUser->id]);
+        }
 
         // 3. Kategori
         $catMusik = Category::firstOrCreate(['slug' => 'musik'], ['name' => 'Musik']);

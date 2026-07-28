@@ -25,6 +25,7 @@
             <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black tracking-widest">
                 <tr>
                     <th class="px-8 py-4">Nama Partner</th>
+                    <th class="px-8 py-4">Email Login</th>
                     <th class="px-8 py-4">Kategori Partner</th>
                     <th class="px-8 py-4">Website</th>
                     <th class="px-8 py-4">Status</th>
@@ -47,6 +48,13 @@
                                 <p class="font-bold text-sm text-slate-900">{{ $partner->name }}</p>
                                 <p class="text-xs text-slate-400">ID: PTR-00{{ $partner->id }}</p>
                             </div>
+                        </td>
+                        <td class="px-8 py-6 text-xs text-slate-600">
+                            @if($partner->user?->email)
+                                <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-lg font-semibold">{{ $partner->user->email }}</span>
+                            @else
+                                <span class="text-slate-400 italic">Belum dibuat</span>
+                            @endif
                         </td>
                         <td class="px-8 py-6 text-sm font-medium text-slate-600">
                             {{ $partner->category }}
@@ -82,7 +90,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-8 py-12 text-center text-slate-400 text-sm">
+                        <td colspan="6" class="px-8 py-12 text-center text-slate-400 text-sm">
                             Belum ada partner terdaftar.
                         </td>
                     </tr>

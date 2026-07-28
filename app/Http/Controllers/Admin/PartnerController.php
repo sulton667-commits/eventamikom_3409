@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Partner;
+use App\Models\User;
 use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class PartnerController extends Controller
 {
@@ -19,7 +21,8 @@ class PartnerController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $partners = Partner::when($search, function ($query, $search) {
+        $partners = Partner::with('user')
+            ->when($search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%")
                       ->orWhere('category', 'like', "%{$search}%");
             })
@@ -41,7 +44,9 @@ class PartnerController extends Controller
             'category' => 'required|string|max:255',
             'website_url' => 'nullable|url|max:255',
             'status' => 'required|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg,gif|max:2048'
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg,gif|max:2048',
+            'email' => 'nullable|email|max:255|unique:users,email',
+            'password' => 'nullable|string|min:6',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -50,7 +55,18 @@ class PartnerController extends Controller
                 'partners'
             );
         }
-        unset($data['logo']);
+
+        if (!empty($data['email']) && !empty($data['password'])) {
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'role' => 'partner',
+            ]);
+            $data['user_id'] = $user->id;
+        }
+
+        unset($data['logo'], $data['email'], $data['password']);
 
         Partner::create($data);
 
@@ -59,17 +75,21 @@ class PartnerController extends Controller
 
     public function edit(Partner $partner)
     {
+        $partner->load('user');
         return view('admin.partners.edit', compact('partner'));
     }
 
     public function update(Request $request, Partner $partner)
     {
+        $userId = $partner->user_id;
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'website_url' => 'nullable|url|max:255',
             'status' => 'required|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg,gif|max:2048'
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg,gif|max:2048',
+            'email' => 'nullable|email|max:255|unique:users,email,' . ($userId ?? 'NULL'),
+            'password' => 'nullable|string|min:6',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -82,7 +102,29 @@ class PartnerController extends Controller
                 'partners'
             );
         }
-        unset($data['logo']);
+
+        if (!empty($data['email'])) {
+            if ($partner->user) {
+                $userUpdate = [
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                ];
+                if (!empty($data['password'])) {
+                    $userUpdate['password'] = Hash::make($data['password']);
+                }
+                $partner->user->update($userUpdate);
+            } else if (!empty($data['password'])) {
+                $user = User::create([
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password' => Hash::make($data['password']),
+                    'role' => 'partner',
+                ]);
+                $data['user_id'] = $user->id;
+            }
+        }
+
+        unset($data['logo'], $data['email'], $data['password']);
 
         $partner->update($data);
 
@@ -94,6 +136,10 @@ class PartnerController extends Controller
         // Hapus logo dari Cloudinary jika berupa URL Cloudinary
         if ($partner->logo_path && str_starts_with($partner->logo_path, 'http')) {
             $this->cloudinary->delete($partner->logo_path);
+        }
+
+        if ($partner->user) {
+            $partner->user->delete();
         }
 
         $partner->delete();
