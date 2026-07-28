@@ -23,7 +23,17 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Partner Utama
+        // 2. Partner User Account
+        User::firstOrCreate(
+            ['email' => 'partner@amikom.ac.id'],
+            [
+                'name' => 'Partner HMSSI Amikom',
+                'password' => bcrypt('partner123'),
+                'role' => 'partner',
+            ]
+        );
+
+        // 3. Partner Utama
         $partner = Partner::firstOrCreate(
             ['name' => 'HMSSI Amikom'],
             [
