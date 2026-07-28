@@ -44,6 +44,7 @@
         "VIEW_COMPILED_PATH": "/tmp",
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie"
+        "SESSION_DRIVER": "cookie",
+        "CLOUDINARY_URL": "cloudinary://277358424968412:YQJgqyRXHODg2g-a7WVJE4Wpn88@xwzrjxxb"
     }
 }
