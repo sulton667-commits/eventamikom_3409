@@ -31,11 +31,12 @@ overflow-hidden">
                     <td class="px-8 py-6 font-bold text-slate-400">{{
                     $events->firstItem() + $index }}</td>
                     <td class="px-8 py-6">
-                        @if($event->poster_path)
-                        <img src="{{ asset('storage/' . $event->poster_path) }}" class="w-16 h-20 rounded-xl object-cover shadow-sm">
+                        @if($event->poster_path && str_starts_with($event->poster_path, 'http'))
+                        <img src="{{ $event->poster_path }}" class="w-16 h-20 rounded-xl object-cover shadow-sm">
                         @else
-                        <img src="https://placehold.co/16x20" class="w-16 h-20 rounded-xl object-cover shadow-sm">
+                        <img src="https://placehold.co/64x80" class="w-16 h-20 rounded-xl object-cover shadow-sm">
                         @endif
+
                     </td>
                     <td class="px-8 py-6">
                         <p class="font-black text-slate-800">{{ $event->title

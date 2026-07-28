@@ -12,11 +12,13 @@
             <div class="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between">
                 <div>
                     <div class="relative overflow-hidden aspect-[4/3]">
-                        @if($event->poster_path)
-                            <img src="{{ asset('storage/' . $event->poster_path) }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        @else
-                            <img src="{{ asset('assets/concert.png') }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        @endif
+                        @php
+                            $posterSrc = ($event->poster_path && str_starts_with($event->poster_path, 'http'))
+                                ? $event->poster_path
+                                : asset('assets/concert.png');
+                        @endphp
+                        <img src="{{ $posterSrc }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
                         <div class="absolute top-3 left-3 px-3 py-1 bg-white/90 backdrop-blur rounded-full text-[10px] font-bold uppercase text-indigo-600 shadow-sm">
                             {{ $event->category->name ?? 'Umum' }}
                         </div>

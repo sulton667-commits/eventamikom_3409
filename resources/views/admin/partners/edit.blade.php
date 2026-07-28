@@ -38,12 +38,13 @@
 
         <div>
             <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Logo Partner</label>
-            @if($partner->logo_path)
+            @if($partner->logo_path && str_starts_with($partner->logo_path, 'http'))
                 <div class="mb-3 flex items-center gap-3">
-                    <img src="{{ asset('storage/' . $partner->logo_path) }}" alt="{{ $partner->name }}" class="w-12 h-12 object-cover rounded-xl border">
+                    <img src="{{ $partner->logo_path }}" alt="{{ $partner->name }}" class="w-12 h-12 object-cover rounded-xl border">
                     <span class="text-xs text-slate-400">Logo saat ini</span>
                 </div>
             @endif
+
             <input type="file" name="logo" accept="image/*" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-600">
             @error('logo') <p class="text-rose-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>

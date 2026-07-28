@@ -108,11 +108,12 @@ tracking-wide">Poster Event (Opsional)</label>
 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4
 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition
 font-medium">
-            @if($event->poster_path)
+            @if($event->poster_path && str_starts_with($event->poster_path, 'http'))
             <p class="text-sm text-slate-500 mt-2">Poster saat ini: <a
-                    href="{{ asset('storage/' . $event->poster_path) }}" target="_blank"
+                    href="{{ $event->poster_path }}" target="_blank"
                     class="text-indigo-600 hover:underline">Lihat</a></p>
             @endif
+
             @error('poster') <span class="text-red-500 text-sm mt-1">{{ $message
 }}</span> @enderror
         </div>

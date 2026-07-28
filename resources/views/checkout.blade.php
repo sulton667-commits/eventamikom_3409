@@ -16,7 +16,7 @@
         <div class="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
             <h2 class="text-lg font-bold text-slate-900 mb-6 pb-4 border-b border-slate-100">Pesanan Anda</h2>
             <div class="flex gap-5 items-center">
-                <img src="{{ isset($event->poster_path) ? asset('storage/' . $event->poster_path) : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&auto=format&fit=crop&q=60' }}" 
+                <img src="{{ (isset($event->poster_path) && $event->poster_path && str_starts_with($event->poster_path, 'http')) ? $event->poster_path : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&auto=format&fit=crop&q=60' }}" 
                      alt="Event" class="w-20 h-20 rounded-2xl object-cover">
                 <div>
                     <h3 class="font-extrabold text-slate-900 text-lg">{{ $event->title ?? 'ndx' }}</h3>

@@ -7,11 +7,13 @@
         <div class="sticky top-28 space-y-6">
             <!-- Poster Card -->
             <div class="overflow-hidden rounded-[2.5rem] shadow-2xl border-8 border-white bg-slate-900 aspect-[4/5]">
-                @if(isset($event->poster_path) && $event->poster_path)
-                    <img src="{{ asset('storage/' . $event->poster_path) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
-                @else
-                    <img src="{{ asset('assets/concert.png') }}" alt="{{ $event->title ?? 'Event' }}" class="w-full h-full object-cover">
-                @endif
+                @php
+                    $posterSrc = (isset($event->poster_path) && $event->poster_path && str_starts_with($event->poster_path, 'http'))
+                        ? $event->poster_path
+                        : asset('assets/concert.png');
+                @endphp
+                <img src="{{ $posterSrc }}" alt="{{ $event->title ?? 'Event' }}" class="w-full h-full object-cover">
+
             </div>
 
             <!-- Penyelenggara Acara Card (Sesuai Gambar 1) -->

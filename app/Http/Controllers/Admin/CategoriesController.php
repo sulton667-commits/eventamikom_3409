@@ -4,12 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CategoriesController extends Controller
 {
+    protected CloudinaryService $cloudinary;
+
+    public function __construct(CloudinaryService $cloudinary)
+    {
+        $this->cloudinary = $cloudinary;
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -38,7 +45,10 @@ class CategoriesController extends Controller
         $data['slug'] = Str::slug($data['name']);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('categories', 'public');
+            $data['image'] = $this->cloudinary->upload(
+                $request->file('image')->getRealPath(),
+                'categories'
+            );
         }
 
         Category::create($data);
@@ -61,10 +71,14 @@ class CategoriesController extends Controller
         $data['slug'] = Str::slug($data['name']);
 
         if ($request->hasFile('image')) {
-            if ($category->image) {
-                Storage::disk('public')->delete($category->image);
+            // Hapus image lama dari Cloudinary jika berupa URL Cloudinary
+            if ($category->image && str_starts_with($category->image, 'http')) {
+                $this->cloudinary->delete($category->image);
             }
-            $data['image'] = $request->file('image')->store('categories', 'public');
+            $data['image'] = $this->cloudinary->upload(
+                $request->file('image')->getRealPath(),
+                'categories'
+            );
         }
 
         $category->update($data);
@@ -74,8 +88,9 @@ class CategoriesController extends Controller
 
     public function destroy(Category $category)
     {
-        if ($category->image) {
-            Storage::disk('public')->delete($category->image);
+        // Hapus image dari Cloudinary jika berupa URL Cloudinary
+        if ($category->image && str_starts_with($category->image, 'http')) {
+            $this->cloudinary->delete($category->image);
         }
         $category->delete();
         return redirect()->route('admin.categories')->with('success', 'Kategori berhasil dihapus.');

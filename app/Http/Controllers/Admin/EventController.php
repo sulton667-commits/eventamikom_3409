@@ -4,11 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
+    protected CloudinaryService $cloudinary;
+
+    public function __construct(CloudinaryService $cloudinary)
+    {
+        $this->cloudinary = $cloudinary;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -48,7 +55,10 @@ class EventController extends Controller
         ]);
 
         if ($request->hasFile('poster')) {
-            $data['poster_path'] = $request->file('poster')->store('posters', 'public');
+            $data['poster_path'] = $this->cloudinary->upload(
+                $request->file('poster')->getRealPath(),
+                'posters'
+            );
         }
         unset($data['poster']);
 
@@ -92,10 +102,14 @@ class EventController extends Controller
         ]);
 
         if ($request->hasFile('poster')) {
-            if ($event->poster_path) {
-                Storage::disk('public')->delete($event->poster_path);
+            // Hapus poster lama dari Cloudinary jika berupa URL Cloudinary
+            if ($event->poster_path && str_starts_with($event->poster_path, 'http')) {
+                $this->cloudinary->delete($event->poster_path);
             }
-            $data['poster_path'] = $request->file('poster')->store('posters', 'public');
+            $data['poster_path'] = $this->cloudinary->upload(
+                $request->file('poster')->getRealPath(),
+                'posters'
+            );
         }
         unset($data['poster']);
 
@@ -108,8 +122,9 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        if ($event->poster_path) {
-            Storage::disk('public')->delete($event->poster_path);
+        // Hapus poster dari Cloudinary jika berupa URL Cloudinary
+        if ($event->poster_path && str_starts_with($event->poster_path, 'http')) {
+            $this->cloudinary->delete($event->poster_path);
         }
         $event->delete();
         return redirect()->route('admin.events.index')->with('success', 'Data event berhasil dihapus secara permanen.');

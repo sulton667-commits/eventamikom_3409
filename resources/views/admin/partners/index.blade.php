@@ -35,13 +35,14 @@
                 @forelse($partners as $partner)
                     <tr class="hover:bg-slate-50 transition">
                         <td class="px-8 py-6 flex items-center gap-4">
-                            @if($partner->logo_path)
-                                <img src="{{ asset('storage/' . $partner->logo_path) }}" alt="{{ $partner->name }}" class="w-10 h-10 object-cover rounded-xl shadow-sm border border-slate-100">
+                            @if($partner->logo_path && str_starts_with($partner->logo_path, 'http'))
+                                <img src="{{ $partner->logo_path }}" alt="{{ $partner->name }}" class="w-10 h-10 object-cover rounded-xl shadow-sm border border-slate-100">
                             @else
                                 <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-bold text-sm shadow-sm">
                                     {{ strtoupper(substr($partner->name, 0, 2)) }}
                                 </div>
                             @endif
+
                             <div>
                                 <p class="font-bold text-sm text-slate-900">{{ $partner->name }}</p>
                                 <p class="text-xs text-slate-400">ID: PTR-00{{ $partner->id }}</p>

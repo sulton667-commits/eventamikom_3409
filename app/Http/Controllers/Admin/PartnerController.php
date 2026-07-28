@@ -4,11 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Partner;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class PartnerController extends Controller
 {
+    protected CloudinaryService $cloudinary;
+
+    public function __construct(CloudinaryService $cloudinary)
+    {
+        $this->cloudinary = $cloudinary;
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -38,7 +45,10 @@ class PartnerController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            $data['logo_path'] = $request->file('logo')->store('partners', 'public');
+            $data['logo_path'] = $this->cloudinary->upload(
+                $request->file('logo')->getRealPath(),
+                'partners'
+            );
         }
 
         Partner::create($data);
@@ -62,10 +72,14 @@ class PartnerController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            if ($partner->logo_path) {
-                Storage::disk('public')->delete($partner->logo_path);
+            // Hapus logo lama dari Cloudinary jika berupa URL Cloudinary
+            if ($partner->logo_path && str_starts_with($partner->logo_path, 'http')) {
+                $this->cloudinary->delete($partner->logo_path);
             }
-            $data['logo_path'] = $request->file('logo')->store('partners', 'public');
+            $data['logo_path'] = $this->cloudinary->upload(
+                $request->file('logo')->getRealPath(),
+                'partners'
+            );
         }
 
         $partner->update($data);
@@ -75,8 +89,9 @@ class PartnerController extends Controller
 
     public function destroy(Partner $partner)
     {
-        if ($partner->logo_path) {
-            Storage::disk('public')->delete($partner->logo_path);
+        // Hapus logo dari Cloudinary jika berupa URL Cloudinary
+        if ($partner->logo_path && str_starts_with($partner->logo_path, 'http')) {
+            $this->cloudinary->delete($partner->logo_path);
         }
 
         $partner->delete();

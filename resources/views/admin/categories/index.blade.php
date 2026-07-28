@@ -39,13 +39,14 @@
                 <tr class="hover:bg-slate-50/50 transition">
                     <td class="px-8 py-6 font-bold text-slate-400">{{ $categories->firstItem() + $index }}</td>
                     <td class="px-8 py-6">
-                        @if($category->image)
-                        <img src="{{ asset('storage/' . $category->image) }}" class="w-16 h-16 rounded-xl object-cover shadow-sm">
+                        @if($category->image && str_starts_with($category->image, 'http'))
+                        <img src="{{ $category->image }}" class="w-16 h-16 rounded-xl object-cover shadow-sm">
                         @else
                         <div class="w-16 h-16 rounded-xl bg-slate-200 flex items-center justify-center">
                             <span class="text-slate-400 text-xs">No Image</span>
                         </div>
                         @endif
+
                     </td>
                     <td class="px-8 py-6">
                         <p class="font-black text-slate-800">{{ $category->name }}</p>

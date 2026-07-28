@@ -96,11 +96,12 @@
                 <div class="event-card group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between" data-category="{{ strtolower($event->category->name ?? 'umum') }}">
                     <div>
                         <div class="relative overflow-hidden aspect-[4/3]">
-                            @if($event->poster_path)
-                                <img src="{{ asset('storage/' . $event->poster_path) }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            @else
-                                <img src="{{ asset('assets/concert.png') }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            @endif
+                            @php
+                                $posterSrc = ($event->poster_path && str_starts_with($event->poster_path, 'http'))
+                                    ? $event->poster_path
+                                    : asset('assets/concert.png');
+                            @endphp
+                            <img src="{{ $posterSrc }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute top-3 left-3 px-3 py-1 bg-white/90 backdrop-blur rounded-full text-[10px] font-bold uppercase tracking-wider text-indigo-600 shadow-sm">
                                 {{ $event->category->name ?? 'Umum' }}
                             </div>
@@ -166,8 +167,8 @@
         <div class="flex flex-wrap items-center justify-center gap-8">
             @forelse($partners as $partner)
                 <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center gap-2 w-44 hover:shadow-md transition">
-                    @if($partner->logo_path)
-                        <img src="{{ asset('storage/' . $partner->logo_path) }}" alt="{{ $partner->name }}" class="w-12 h-12 object-cover rounded-xl shadow-sm border border-slate-100">
+                    @if($partner->logo_path && str_starts_with($partner->logo_path, 'http'))
+                        <img src="{{ $partner->logo_path }}" alt="{{ $partner->name }}" class="w-12 h-12 object-cover rounded-xl shadow-sm border border-slate-100">
                     @else
                         <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 font-bold text-lg">
                             {{ strtoupper(substr($partner->name, 0, 2)) }}

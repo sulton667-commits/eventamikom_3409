@@ -19,9 +19,10 @@
             <div class="mb-6">
                 <label for="image" class="block text-sm font-bold text-slate-700 mb-2">Gambar Kategori (Opsional)</label>
                 <input type="file" name="image" id="image" accept="image/*" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition @error('image') border-red-500 @enderror">
-                @if($category->image)
-                <p class="text-sm text-slate-500 mt-2">Gambar saat ini: <a href="{{ asset('storage/' . $category->image) }}" target="_blank" class="text-indigo-600 hover:underline">Lihat</a></p>
+                @if($category->image && str_starts_with($category->image, 'http'))
+                <p class="text-sm text-slate-500 mt-2">Gambar saat ini: <a href="{{ $category->image }}" target="_blank" class="text-indigo-600 hover:underline">Lihat</a></p>
                 @endif
+
                 @error('image')
                 <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
                 @enderror
