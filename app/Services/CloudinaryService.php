@@ -6,11 +6,19 @@ use Cloudinary\Cloudinary;
 
 class CloudinaryService
 {
-    protected Cloudinary $cloudinary;
+    protected ?Cloudinary $cloudinary = null;
 
-    public function __construct()
+    protected function getCloudinary(): Cloudinary
     {
-        $this->cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
+        if ($this->cloudinary === null) {
+            $url = config('services.cloudinary.url') ?? env('CLOUDINARY_URL');
+            if (empty($url)) {
+                throw new \RuntimeException('CLOUDINARY_URL is missing or empty in environment configuration.');
+            }
+            $this->cloudinary = new Cloudinary($url);
+        }
+
+        return $this->cloudinary;
     }
 
     /**
@@ -18,7 +26,7 @@ class CloudinaryService
      */
     public function upload(string $filePath, string $folder = 'posters'): string
     {
-        $result = $this->cloudinary->uploadApi()->upload($filePath, [
+        $result = $this->getCloudinary()->uploadApi()->upload($filePath, [
             'folder' => $folder,
         ]);
 
@@ -43,6 +51,6 @@ class CloudinaryService
         $publicId = pathinfo($publicIdWithExt, PATHINFO_DIRNAME) . '/' . pathinfo($publicIdWithExt, PATHINFO_FILENAME);
         $publicId = str_replace('./', '', $publicId);
 
-        $this->cloudinary->uploadApi()->destroy($publicId);
+        $this->getCloudinary()->uploadApi()->destroy($publicId);
     }
 }
