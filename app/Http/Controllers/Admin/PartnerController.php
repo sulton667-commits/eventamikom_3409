@@ -50,6 +50,7 @@ class PartnerController extends Controller
                 'partners'
             );
         }
+        unset($data['logo']);
 
         Partner::create($data);
 
@@ -81,6 +82,7 @@ class PartnerController extends Controller
                 'partners'
             );
         }
+        unset($data['logo']);
 
         $partner->update($data);
 
