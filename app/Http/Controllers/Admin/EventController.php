@@ -25,7 +25,8 @@ class EventController extends Controller
     public function create()
     {
         $categories = \App\Models\Category::orderBy('name')->get();
-        return view('admin.events.create', compact('categories'));
+        $partners = \App\Models\Partner::orderBy('name')->get();
+        return view('admin.events.create', compact('categories', 'partners'));
 
     }
 
@@ -36,6 +37,7 @@ class EventController extends Controller
     {
         $data = $request->validate([
             'category_id' => 'required',
+            'partner_id' => 'nullable|exists:partners,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'date' => 'required|date',
@@ -48,6 +50,7 @@ class EventController extends Controller
         if ($request->hasFile('poster')) {
             $data['poster_path'] = $request->file('poster')->store('posters', 'public');
         }
+        unset($data['poster']);
 
         \App\Models\Event::create($data);
         return redirect()->route('admin.events.index')->with('success', 'Data Event berhasil ditambahkan.');
@@ -67,7 +70,8 @@ class EventController extends Controller
     public function edit(Event $event)
     {
         $categories = \App\Models\Category::orderBy('name')->get();
-        return view('admin.events.edit', compact('event', 'categories'));
+        $partners = \App\Models\Partner::orderBy('name')->get();
+        return view('admin.events.edit', compact('event', 'categories', 'partners'));
     }
 
     /**
@@ -77,6 +81,7 @@ class EventController extends Controller
     {
         $data = $request->validate([
             'category_id' => 'required',
+            'partner_id' => 'nullable|exists:partners,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'date' => 'required|date',
@@ -92,6 +97,7 @@ class EventController extends Controller
             }
             $data['poster_path'] = $request->file('poster')->store('posters', 'public');
         }
+        unset($data['poster']);
 
         $event->update($data);
         return redirect()->route('admin.events.index')->with('success', 'Rincian data event berhasil diperbarui.');

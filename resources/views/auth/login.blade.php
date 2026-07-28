@@ -5,72 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Admin - AmikomEventHub</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%); }
-        .input-focus:focus { box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f0f2f5; }
     </style>
 </head>
-<body class="gradient-bg flex h-screen items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-10 transform hover:scale-105 transition-transform duration-300">
-        <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-indigo-600 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                </svg>
-            </div>
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Selamat Datang Admin</h2>
-            <p class="text-gray-500">Silakan login untuk mengakses dashboard</p>
-        </div>
+<body class="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-slate-100">
 
-        @if(session('error'))
-        <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-r-lg">
-            <p class="font-medium">{{ session('error') }}</p>
-        </div>
-        @endif
-
-        <form action="{{ route('admin.login') }}" method="POST" class="space-y-6">
-            @csrf
+    <!-- Header Branding -->
+    <div class="flex flex-col items-center mb-8">
+        <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md">AH</div>
             <div>
-                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-                <div class="relative">
-                    <input type="email" id="email" name="email" required value="{{ old('email') }}"
-                        class="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 input-focus transition outline-none"
-                        placeholder="admin@xxxxx.xx.xx">
-                    <svg class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l4 4 6-6m10 0l-6 6-4 4"></path>
-                    </svg>
-                </div>
-                @error('email')
-                <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
+                <div class="font-extrabold text-slate-800 text-lg leading-tight">AmikomEventHub</div>
+                <div class="text-[10px] text-slate-400 leading-none">amikom</div>
             </div>
-
-            <div>
-                <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-                <div class="relative">
-                    <input type="password" id="password" name="password" required
-                        class="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:border-indigo-500 input-focus transition outline-none"
-                        placeholder="••••••••">
-                    <svg class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
-                    </svg>
-                </div>
-                @error('password')
-                <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <button type="submit"
-                class="w-full bg-indigo-600 text-white py-3 px-4 rounded-xl font-bold text-lg hover:bg-indigo-700 transform hover:-translate-y-1 transition shadow-lg hover:shadow-indigo-300/50">
-                Masuk Dashboard
-            </button>
-        </form>
-
-        <div class="mt-8 text-center">
-            <p class="text-gray-400 text-sm">© 3406 AmikomEventHub - Universitas Amikom Yogyakarta</p>
+            <span class="ml-2 px-3 py-1 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-full text-[10px] font-bold flex items-center gap-1">
+                <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full inline-block"></span> Panel Admin
+            </span>
         </div>
     </div>
+
+    <!-- Card -->
+    <div class="w-full max-w-md">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-slate-900">Login Admin</h1>
+            <p class="text-sm text-slate-500 mt-1">Masuk ke dashboard pengelolaan sistem.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+            @if($errors->any())
+                <div class="bg-red-50 border border-red-100 text-red-600 text-xs font-medium p-3 rounded-xl mb-6">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="bg-red-50 border border-red-100 text-red-600 text-xs font-medium p-3 rounded-xl mb-6">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            <form action="{{ route('admin.login') }}" method="POST" class="space-y-5">
+                @csrf
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Email Admin</label>
+                    <input type="email" name="email" value="{{ old('email') }}" required
+                        placeholder="admin@amikom.ac.id"
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Password</label>
+                    <input type="password" name="password" required
+                        placeholder="••••••••"
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition">
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-sm transition shadow-md shadow-indigo-200 mt-2">
+                    Masuk ke Dashboard Admin
+                </button>
+            </form>
+        </div>
+
+        <!-- Switch Role -->
+        <div class="mt-6 text-center">
+            <p class="text-xs text-slate-400 mb-3">Butuh akses peran lain?</p>
+            <div class="flex items-center justify-center gap-4 text-xs font-semibold">
+                <a href="{{ url('/login') }}" class="flex items-center gap-1.5 text-indigo-500 hover:text-indigo-700 transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    Login Customer
+                </a>
+                <span class="text-slate-300">•</span>
+                <a href="{{ url('/partner/login') }}" class="flex items-center gap-1.5 text-emerald-500 hover:text-emerald-700 transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Login Partner
+                </a>
+            </div>
+            <div class="mt-4">
+                <a href="{{ url('/') }}" class="text-xs text-slate-400 hover:text-slate-600 transition">← Kembali ke Beranda</a>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
