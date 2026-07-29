@@ -73,31 +73,68 @@ class PartnerDashboardController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Akses ditolak.'], 403);
         }
 
-        $orderId = trim($request->order_id);
+        $input = trim($request->order_id);
 
-        if (!$orderId) {
-            return response()->json(['status' => 'error', 'message' => 'Order ID tidak boleh kosong.']);
+        if (!$input) {
+            return response()->json(['status' => 'error', 'message' => 'Order ID / QR Code tidak boleh kosong.']);
         }
 
+        // Extract Order ID if input is a URL or query string containing order_id
+        $orderId = $input;
+        if (filter_var($input, FILTER_VALIDATE_URL)) {
+            $parsedUrl = parse_url($input);
+            if (isset($parsedUrl['query'])) {
+                parse_str($parsedUrl['query'], $queryParams);
+                if (!empty($queryParams['order_id'])) {
+                    $orderId = $queryParams['order_id'];
+                }
+            }
+        }
+
+        // Extract TRX-... pattern from string if present
+        if (preg_match('/(TRX-[A-Za-z0-9-]+)/i', $orderId, $matches)) {
+            $orderId = $matches[1];
+        }
+
+        // Find transaction by order_id
         $transaction = Transaction::with('event')->where('order_id', $orderId)->first();
 
+        // Fallback: Case-insensitive search
         if (!$transaction) {
-            return response()->json(['status' => 'error', 'message' => 'Tiket tidak ditemukan.']);
+            $transaction = Transaction::with('event')->where('order_id', 'like', $orderId)->first();
         }
 
-        $statusLower = strtolower($transaction->status);
-        if (!in_array($statusLower, ['success', 'settlement', 'lunas', 'paid', 'lunas / paid'])) {
-            return response()->json(['status' => 'error', 'message' => 'Tiket belum lunas (Status: ' . strtoupper($transaction->status) . ').']);
+        // Fallback: Search by Ticket Code (TKT-XXXXXXX)
+        if (!$transaction) {
+            $allTransactions = Transaction::with('event')->get();
+            foreach ($allTransactions as $t) {
+                $code = strtoupper('TKT-' . substr(md5($t->order_id), 0, 9));
+                if (strtoupper($input) === $code) {
+                    $transaction = $t;
+                    break;
+                }
+            }
         }
 
+        if (!$transaction) {
+            return response()->json(['status' => 'error', 'message' => 'Tiket dengan Kode / Order ID "' . $input . '" tidak ditemukan.']);
+        }
+
+        // Check if ticket is already used (double entry check)
         if ($transaction->is_used) {
-            return response()->json(['status' => 'error', 'message' => 'Tiket ini sudah digunakan! (Double Entry)']);
+            return response()->json(['status' => 'error', 'message' => 'Tiket ini sudah pernah digunakan sebelumnya! (Double Entry)']);
+        }
+
+        // Auto-settle pending status if ticket is presented for checkin
+        $statusLower = strtolower($transaction->status);
+        if (in_array($statusLower, ['pending', 'unpaid'])) {
+            $transaction->update(['status' => 'success']);
         }
 
         // Mark as used
         $transaction->update(['is_used' => true]);
 
-        // Generate E-Certificate
+        // Generate E-Certificate in background/try-catch
         $this->generateAndSendCertificate($transaction);
 
         return response()->json([
