@@ -55,17 +55,13 @@ Route::post('/logout', [UserAuthController::class, 'logout'])->name('user.logout
 
 
 // ===========================
-// AUTENTIKASI PARTNER
+// AUTENTIKASI & DASHBOARD PARTNER
 // ===========================
 Route::prefix('partner')->name('partner.')->group(function () {
     Route::get('/login', [UserAuthController::class, 'showLoginPartner'])->name('login');
     Route::post('/login', [UserAuthController::class, 'loginPartner'])->name('login.submit');
-    Route::get('/dashboard', function () {
-        if (!auth()->check() || auth()->user()->role !== 'partner') {
-            return redirect('/partner/login');
-        }
-        return view('partner.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/scanner/check', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'checkIn'])->name('scanner.check');
 });
 
 
