@@ -31,7 +31,7 @@
 
                 <!-- Main Hero Poster Card -->
                 <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-100 bg-white">
-                    <img src="{{ file_exists(public_path('concert.png')) ? asset('concert.png') : 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1000&q=80' }}" alt="Event Poster" class="w-full h-[420px] object-cover">
+                    <img src="{{ asset('concert.png') }}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1000&q=80';" alt="Event Poster" class="w-full h-[420px] object-cover">
                 </div>
 
                 <!-- Floating Verification Badge -->
@@ -99,9 +99,9 @@
                             @php
                                 $posterSrc = ($event->poster_path && str_starts_with($event->poster_path, 'http'))
                                     ? $event->poster_path
-                                    : (file_exists(public_path('concert.png')) ? asset('concert.png') : 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1000&q=80');
+                                    : asset('concert.png');
                             @endphp
-                            <img src="{{ $posterSrc }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ $posterSrc }}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1000&q=80';" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute top-3 left-3 px-3 py-1 bg-white/90 backdrop-blur rounded-full text-[10px] font-bold uppercase tracking-wider text-indigo-600 shadow-sm">
                                 {{ $event->category->name ?? 'Umum' }}
                             </div>

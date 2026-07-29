@@ -12,7 +12,7 @@
                         ? $event->poster_path
                         : asset('concert.png');
                 @endphp
-                <img src="{{ $posterSrc }}" alt="{{ $event->title ?? 'Event' }}" class="w-full h-full object-cover">
+                <img src="{{ $posterSrc }}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1000&q=80';" alt="{{ $event->title ?? 'Event' }}" class="w-full h-full object-cover">
 
             </div>
 
