@@ -15,7 +15,7 @@
                         @php
                             $posterSrc = ($event->poster_path && str_starts_with($event->poster_path, 'http'))
                                 ? $event->poster_path
-                                : asset('assets/concert.png');
+                                : asset('concert.png');
                         @endphp
                         <img src="{{ $posterSrc }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
 
