@@ -32,9 +32,6 @@ class PartnerDashboardController extends Controller
         // Get events for this partner
         if ($partner) {
             $events = Event::where('partner_id', $partner->id)->latest()->get();
-            if ($events->isEmpty()) {
-                $events = Event::latest()->get();
-            }
         } else {
             $events = Event::latest()->get();
         }
@@ -42,8 +39,9 @@ class PartnerDashboardController extends Controller
         $eventIds = $events->pluck('id')->toArray();
 
         // Get transactions for these events
-        $transactions = Transaction::whereIn('event_id', $eventIds)->with('event')->latest()->get();
-        if ($transactions->isEmpty()) {
+        if ($partner) {
+            $transactions = Transaction::whereIn('event_id', $eventIds)->with('event')->latest()->get();
+        } else {
             $transactions = Transaction::with('event')->latest()->get();
         }
 
