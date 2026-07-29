@@ -51,13 +51,17 @@
 
 <!-- Charts Section -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-    <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+    <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col">
         <h3 class="font-black text-lg mb-4">Pertumbuhan Pengguna Baru</h3>
-        <canvas id="userChart" height="250"></canvas>
+        <div class="relative h-64 w-full">
+            <canvas id="userChart"></canvas>
+        </div>
     </div>
-    <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+    <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col">
         <h3 class="font-black text-lg mb-4">Penyelenggaraan Event Baru</h3>
-        <canvas id="eventChart" height="250"></canvas>
+        <div class="relative h-64 w-full">
+            <canvas id="eventChart"></canvas>
+        </div>
     </div>
 </div>
 
