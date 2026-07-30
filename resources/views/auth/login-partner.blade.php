@@ -66,6 +66,12 @@
                     Masuk ke Dashboard Partner
                 </button>
             </form>
+
+            <div class="mt-5 text-center">
+                <p class="text-xs text-slate-400">Belum punya akun partner?
+                    <a href="{{ route('partner.register') }}" class="text-emerald-600 font-semibold hover:underline">Daftar Partner Baru</a>
+                </p>
+            </div>
         </div>
 
         <!-- Switch Role -->

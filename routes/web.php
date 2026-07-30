@@ -51,6 +51,8 @@ Route::get('/login', [UserAuthController::class, 'showLoginUser'])->name('user.l
 Route::post('/login', [UserAuthController::class, 'loginUser'])->name('user.login.submit');
 Route::get('/register', [UserAuthController::class, 'showRegister'])->name('user.register');
 Route::post('/register', [UserAuthController::class, 'register'])->name('user.register.submit');
+Route::get('/auth/google', [UserAuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [UserAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 Route::post('/logout', [UserAuthController::class, 'logout'])->name('user.logout');
 
 
@@ -60,6 +62,8 @@ Route::post('/logout', [UserAuthController::class, 'logout'])->name('user.logout
 Route::prefix('partner')->name('partner.')->group(function () {
     Route::get('/login', [UserAuthController::class, 'showLoginPartner'])->name('login');
     Route::post('/login', [UserAuthController::class, 'loginPartner'])->name('login.submit');
+    Route::get('/register', [UserAuthController::class, 'showRegisterPartner'])->name('register');
+    Route::post('/register', [UserAuthController::class, 'registerPartner'])->name('register.submit');
     Route::get('/dashboard', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'index'])->name('dashboard');
     Route::post('/scanner/check', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'checkIn'])->name('scanner.check');
 });
