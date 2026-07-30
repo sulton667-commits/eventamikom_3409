@@ -65,6 +65,8 @@ Route::prefix('partner')->name('partner.')->group(function () {
     Route::get('/register', [UserAuthController::class, 'showRegisterPartner'])->name('register');
     Route::post('/register', [UserAuthController::class, 'registerPartner'])->name('register.submit');
     Route::get('/dashboard', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/scan-ticket', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'scanTicket'])->name('scan-ticket');
+    Route::get('/scanner/stats', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'getStats'])->name('scanner.stats');
     Route::post('/scanner/check', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'checkIn'])->name('scanner.check');
 });
 
